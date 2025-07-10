@@ -13,7 +13,6 @@
 %bcond_without	pgo
 %bcond_without	expopt
 
-
 Summary:		LAME Ain't an MP3 Encoder
 Name:		lame
 Version:		3.100
@@ -30,6 +29,7 @@ Patch7:		msse.patch
 Patch8:		pkg-config.patch
 # Let's give it a performance boost...
 Patch12:	http://tmkk.undo.jp/lame/lame-3.100-sse-20171014.diff
+Patch13:	lame-3.100-update-for-newer-autotools.patch
 BuildRequires:		libtool
 %ifarch %{ix86} %{x86_64}
 BuildRequires:		nasm
@@ -113,7 +113,7 @@ find html -name "*.2~"|xargs rm -f
 
 
 %build
-# Needed for P7
+# Needed for P8
 autoreconf -vfi
 sed -i -e 's/^\(\s*hardcode_libdir_flag_spec\s*=\).*/\1/' configure
 export CC=gcc
@@ -122,7 +122,6 @@ export CXX=g++
 export LD=%{_bindir}/ld.bfd
 %endif
 
-# There is no %%bcond_without pgo defined
 %if %{with pgo}
 export LD_LIBRARY_PATH="$(pwd)"
 CFLAGS="%{optflags} -fprofile-generate" \
@@ -142,8 +141,8 @@ LDFLAGS="%{build_ldflags} -fprofile-generate  -lgcov" \
 	--disable-gtktest
 
 # The bundled libtool is extremely broken...
-rm -f libtool
-cp -f /usr/bin/libtool .
+#rm -f libtool
+#cp -f /usr/bin/libtool .
 
 %make_build LIBS=-lm
 
@@ -172,8 +171,8 @@ LDFLAGS="%{build_ldflags} -fprofile-use=$PROFDATA  -lgcov" \
 	--disable-gtktest
 
 # The bundled libtool is extremely broken...
-rm -f libtool
-cp -f /usr/bin/libtool .
+#rm -f libtool
+#cp -f /usr/bin/libtool .
 
 %make_build LIBS=-lm
 
