@@ -29,11 +29,12 @@ Patch7:		msse.patch
 Patch8:		pkg-config.patch
 # Let's give it a performance boost...
 Patch12:	http://tmkk.undo.jp/lame/lame-3.100-sse-20171014.diff
-Patch13:	lame-3.100-update-for-newer-autotools.patch
+#Patch13:	lame-3.100-update-for-newer-autotools.patch
 BuildRequires:		libtool
 %ifarch %{ix86} %{x86_64}
 BuildRequires:		nasm
 %endif
+BuildRequires:		gettext-devel
 BuildRequires:		pkgconfig(gtk+-2.0)
 BuildRequires:		pkgconfig(ncurses)
 BuildRequires:		pkgconfig(x11)
