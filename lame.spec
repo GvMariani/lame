@@ -3,6 +3,7 @@
 %define		devname %mklibname -d %{name}
 
 %global		_disable_lto 1
+%global		_disable_ld_no_undefined 1
 
 %global optflags %{optflags} -O3
 %ifarch %{ix86}
