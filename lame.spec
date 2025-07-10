@@ -36,6 +36,7 @@ BuildRequires:		nasm
 %endif
 BuildRequires:		gettext-devel
 BuildRequires:		pkgconfig(gtk+-2.0)
+BuildRequires:		pkgconfig(libmpg123)
 BuildRequires:		pkgconfig(ncurses)
 BuildRequires:		pkgconfig(x11)
 BuildRequires:		pkgconfig(xau)
