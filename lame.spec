@@ -30,6 +30,11 @@ Patch7:		msse.patch
 Patch8:		pkg-config.patch
 # Let's give it a performance boost...
 Patch12:	http://tmkk.undo.jp/lame/lame-3.100-sse-20171014.diff
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:		libtool
 %ifarch %{ix86} %{x86_64}
 BuildRequires:		nasm
