@@ -1,8 +1,10 @@
 %define		major 0
-%define		libname %mklibname %{name} %{major}
+%define		oldlibname %mklibname %{name} 0
+%define		libname %mklibname %{name}
 %define		devname %mklibname -d %{name}
 
-%global		_disable_lto 1
+# LTO was disabled (with a forced gcc) in 2021 for silent MP3 output; re-verified
+# OK with clang 22 + LAME 3.101 (including LTO).
 %global		_disable_ld_no_undefined 1
 
 %global optflags %{optflags} -O3
@@ -16,8 +18,8 @@
 
 Summary:		LAME Ain't an MP3 Encoder
 Name:		lame
-Version:		3.100
-Release:		7
+Version:		3.101
+Release:		1
 License:		LGPLv2
 Group:		Sound
 Url:		https://lame.sourceforge.net
@@ -25,17 +27,22 @@ Url:		https://lame.sourceforge.net
 Source0:	https://downloads.sourceforge.net/project/lame/lame/%{version}/%{name}-%{version}.tar.gz
 # (tpg) patches from debian
 Patch3:		07-field-width-fix.patch
-Patch6:		privacy-breach.patch
 Patch7:		msse.patch
-Patch8:		pkg-config.patch
+# LAME 3.101 UTF-8 ID3 helpers: unsigned short* vs char* type mismatch
+Patch8:		fix-incompatible-pointer-types.patch
+# UCS-2 helpers used by frontend but hidden by DEPRECATED_OR_OBSOLETE_CODE_REMOVED
+Patch9:		fix-implicit-function-declaration.patch
+# Export new 3.101 symbols missing from libmp3lame.sym (dynamic frontend link)
+Patch10:	export-new-symbols.patch
 # Let's give it a performance boost...
 Patch12:	http://tmkk.undo.jp/lame/lame-3.100-sse-20171014.diff
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	libtool-base
 BuildRequires:	slibtool
 BuildRequires:	make
-BuildRequires:		libtool
+%if %{with pgo}
+BuildRequires:	llvm
+%endif
 %ifarch %{ix86} %{x86_64}
 BuildRequires:		nasm
 %endif
@@ -79,6 +86,7 @@ which uses LAME.
 %package -n %{libname}
 Summary:	Main library for lame
 Group:		System/Libraries
+%rename %{oldlibname}
 
 %description -n %{libname}
 This package contains the library needed to run programs dynamically
@@ -120,22 +128,23 @@ find html -name "*.2~"|xargs rm -f
 
 
 %build
-# Needed for P8
 autoreconf -vfi
 sed -i -e 's/^\(\s*hardcode_libdir_flag_spec\s*=\).*/\1/' configure
-export CC=gcc
-export CXX=g++
 %ifarch %{ix86}
 export LD=%{_bindir}/ld.bfd
 %endif
 
 %if %{with pgo}
-export LD_LIBRARY_PATH="$(pwd)"
+# Clang/LLVM instrumentation PGO (.profraw -> llvm-profdata -> .profdata)
+export PGO_RAW_DIR="$(pwd)/.pgo-raw"
+mkdir -p "$PGO_RAW_DIR"
+export LLVM_PROFILE_FILE="$PGO_RAW_DIR/lame-%p-%m.profraw"
+export LD_LIBRARY_PATH="$(pwd)/libmp3lame/.libs:$(pwd)/frontend/.libs:$(pwd)"
 CFLAGS="%{optflags} -fprofile-generate" \
 CXXFLAGS="%{optflags} -fprofile-generate" \
 FFLAGS="$CFLAGS" \
 FCFLAGS="$CFLAGS" \
-LDFLAGS="%{build_ldflags} -fprofile-generate  -lgcov" \
+LDFLAGS="%{build_ldflags} -fprofile-generate" \
 %configure \
 %ifarch %{ix86} %{x86_64}
 	--enable-nasm \
@@ -149,22 +158,25 @@ LDFLAGS="%{build_ldflags} -fprofile-generate  -lgcov" \
 
 # The bundled libtool is extremely broken...
 rm -f libtool
-cp -f /usr/bin/libtool .
+cp -f /usr/bin/rclibtool libtool
 
 %make_build LIBS=-lm
 
 make test
 
 unset LD_LIBRARY_PATH
-llvm-profdata merge --output=%{name}-llvm.profdata $(find . -name "*.profraw" -type f)
+unset LLVM_PROFILE_FILE
+test -n "$(find "$PGO_RAW_DIR" -name '*.profraw' -type f | head -n 1)" \
+	|| { echo "PGO: no .profraw files in $PGO_RAW_DIR after make test" >&2; exit 1; }
+llvm-profdata merge --output=%{name}-llvm.profdata "$PGO_RAW_DIR"/*.profraw
 PROFDATA="$(realpath %{name}-llvm.profdata)"
-rm -f *.profraw
+rm -rf "$PGO_RAW_DIR"
 
 make clean
 
 CFLAGS="%{optflags} -fprofile-use=$PROFDATA" \
 CXXFLAGS="%{optflags} -fprofile-use=$PROFDATA" \
-LDFLAGS="%{build_ldflags} -fprofile-use=$PROFDATA  -lgcov" \
+LDFLAGS="%{build_ldflags} -fprofile-use=$PROFDATA" \
 %endif
 %configure \
 %ifarch %{ix86} %{x86_64}
@@ -179,7 +191,7 @@ LDFLAGS="%{build_ldflags} -fprofile-use=$PROFDATA  -lgcov" \
 
 # The bundled libtool is extremely broken...
 rm -f libtool
-cp -f /usr/bin/libtool .
+cp -f /usr/bin/rclibtool libtool
 
 %make_build LIBS=-lm
 

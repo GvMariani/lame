@@ -1,0 +1,25 @@
+Description: Export new LAME 3.101 symbols used by the frontend
+ hip_finish_pinfo and the UTF-8 ID3 helpers are implemented and listed in
+ lame.def, but were omitted from include/libmp3lame.sym. With
+ -export-symbols / version-script linking, dynamic frontends then fail
+ to resolve them.
+
+--- a/include/libmp3lame.sym	2023-11-21 12:45:29.000000000 +0100
++++ b/include/libmp3lame.sym	2026-07-10 17:30:37.711102887 +0200
+@@ -193,6 +193,7 @@
+ hip_decode1
+ hip_decode1_headers
+ hip_decode1_headersB
++hip_finish_pinfo
+ lame_decode_init
+ lame_decode
+ lame_decode_headers
+@@ -231,6 +232,8 @@
+ id3tag_set_fieldvalue_utf16
+ id3tag_set_textinfo_utf16
+ id3tag_set_comment_utf16
++id3tag_set_textinfo_utf8
++id3tag_set_comment_utf8
+ lame_get_bitrate
+ lame_get_samplerate
+ lame_get_maximum_number_of_samples

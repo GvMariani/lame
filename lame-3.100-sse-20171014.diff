@@ -1,8 +1,7 @@
-diff --git a/libmp3lame/fft.c b/libmp3lame/fft.c
-index 4eea1ad..81ce8ea 100644
---- a/libmp3lame/fft.c
-+++ b/libmp3lame/fft.c
-@@ -331,7 +331,7 @@ init_fft(lame_internal_flags * const gfc)
+diff -up lame-3.101/libmp3lame/fft.c.3~ lame-3.101/libmp3lame/fft.c
+--- lame-3.101/libmp3lame/fft.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/fft.c	2026-07-10 16:52:14.795614286 +0200
+@@ -331,7 +331,7 @@ init_fft(lame_internal_flags * const gfc
      }
  #else
  #ifdef HAVE_XMMINTRIN_H
@@ -11,10 +10,9 @@ index 4eea1ad..81ce8ea 100644
      gfc->fft_fht = fht_SSE2;
  #endif
  #endif
-diff --git a/libmp3lame/gain_analysis.c b/libmp3lame/gain_analysis.c
-index c94db78..c6f9c3b 100644
---- a/libmp3lame/gain_analysis.c
-+++ b/libmp3lame/gain_analysis.c
+diff -up lame-3.101/libmp3lame/gain_analysis.c.3~ lame-3.101/libmp3lame/gain_analysis.c
+--- lame-3.101/libmp3lame/gain_analysis.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/gain_analysis.c	2026-07-10 16:52:14.795766967 +0200
 @@ -95,6 +95,9 @@
  #include <stdio.h>
  #include <stdlib.h>
@@ -93,7 +91,7 @@ index c94db78..c6f9c3b 100644
  static const Float_t ABYule[9][multiple_of(4, 2 * YULE_ORDER + 1)] = {
      /* 20                 18                 16                 14                 12                 10                 8                  6                  4                  2                 0                 19                 17                 15                 13                 11                 9                  7                  5                  3                  1              */
      { 0.00288463683916,  0.00012025322027,  0.00306428023191,  0.00594298065125, -0.02074045215285,  0.02161526843274, -0.01655260341619, -0.00009291677959, -0.00123395316851, -0.02160367184185, 0.03857599435200, 0.13919314567432, -0.86984376593551,  2.75465861874613, -5.87257861775999,  9.48293806319790,-12.28759895145294, 13.05504219327545,-11.34170355132042,  7.81501653005538, -3.84664617118067},
-@@ -133,7 +197,8 @@ static const Float_t ABButter[9][multiple_of(4, 2 * BUTTER_ORDER + 1)] = {
+@@ -133,7 +197,8 @@ static const Float_t ABButter[9][multipl
      {0.96009142950541, 0.92177618768381, -1.92018285901082, -1.91858953033784, 0.96009142950541},
      {0.95856916599601, 0.91885558323625, -1.91713833199203, -1.91542108074780, 0.95856916599601},
      {0.94597685600279, 0.89487434461664, -1.89195371200558, -1.88903307939452, 0.94597685600279}
@@ -103,7 +101,7 @@ index c94db78..c6f9c3b 100644
  
  /*lint -restore */
  
-@@ -143,6 +208,128 @@ static const Float_t ABButter[9][multiple_of(4, 2 * BUTTER_ORDER + 1)] = {
+@@ -143,6 +208,128 @@ static const Float_t ABButter[9][multipl
  
  /* When calling this procedure, make sure that ip[-order] and op[-order] point to real data! */
  
@@ -232,7 +230,7 @@ index c94db78..c6f9c3b 100644
  static void
  filterYule(const Float_t * input, Float_t * output, size_t nSamples, const Float_t * const kernel)
  {
-@@ -188,6 +375,7 @@ filterButter(const Float_t * input, Float_t * output, size_t nSamples, const Flo
+@@ -188,6 +375,7 @@ filterButter(const Float_t * input, Floa
          ++input;
      }
  }
@@ -240,10 +238,9 @@ index c94db78..c6f9c3b 100644
  
  
  
-diff --git a/libmp3lame/l3side.h b/libmp3lame/l3side.h
-index f65bbed..fe9d8f5 100644
---- a/libmp3lame/l3side.h
-+++ b/libmp3lame/l3side.h
+diff -up lame-3.101/libmp3lame/l3side.h.3~ lame-3.101/libmp3lame/l3side.h
+--- lame-3.101/libmp3lame/l3side.h.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/l3side.h	2026-07-10 16:52:14.795928989 +0200
 @@ -46,7 +46,7 @@ typedef struct {
  
  typedef struct {
@@ -262,11 +259,10 @@ index f65bbed..fe9d8f5 100644
      int     main_data_begin;
      int     private_bits;
      int     resvDrain_pre;
-diff --git a/libmp3lame/lame.c b/libmp3lame/lame.c
-index cb82225..4038694 100644
---- a/libmp3lame/lame.c
-+++ b/libmp3lame/lame.c
-@@ -2364,7 +2364,7 @@ lame_init_internal_flags(lame_internal_flags* gfc)
+diff -up lame-3.101/libmp3lame/lame.c.3~ lame-3.101/libmp3lame/lame.c
+--- lame-3.101/libmp3lame/lame.c.3~	2020-05-06 09:45:56.000000000 +0200
++++ lame-3.101/libmp3lame/lame.c	2026-07-10 16:52:14.796062551 +0200
+@@ -2381,7 +2381,7 @@ lame_init_internal_flags(lame_internal_f
      gfc->ov_rpg.noclipGainChange = 0;
      gfc->ov_rpg.noclipScale = -1.0;
  
@@ -275,7 +271,7 @@ index cb82225..4038694 100644
      if (NULL == gfc->ATH)
          return -2;      /* maybe error codes should be enumerated in lame.h ?? */
  
-@@ -2455,7 +2455,7 @@ lame_init_old(lame_global_flags * gfp)
+@@ -2472,7 +2472,7 @@ lame_init_old(lame_global_flags * gfp)
      gfp->report.errorf = &lame_report_def;
      gfp->report.msgf = &lame_report_def;
  
@@ -284,10 +280,9 @@ index cb82225..4038694 100644
  
      if (lame_init_internal_flags(gfp->internal_flags) < 0) {
          freegfc(gfp->internal_flags);
-diff --git a/libmp3lame/newmdct.c b/libmp3lame/newmdct.c
-index 596cac9..787c911 100644
---- a/libmp3lame/newmdct.c
-+++ b/libmp3lame/newmdct.c
+diff -up lame-3.101/libmp3lame/newmdct.c.3~ lame-3.101/libmp3lame/newmdct.c
+--- lame-3.101/libmp3lame/newmdct.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/newmdct.c	2026-07-10 16:52:14.796339614 +0200
 @@ -36,10 +36,13 @@
  #include "util.h"
  #include "newmdct.h"
@@ -303,7 +298,7 @@ index 596cac9..787c911 100644
      -4.77e-07 * 0.740951125354959 / 2.384e-06, 1.03951e-04 * 0.740951125354959 / 2.384e-06,
      9.53674e-04 * 0.740951125354959 / 2.384e-06, 2.841473e-03 * 0.740951125354959 / 2.384e-06,
      3.5758972e-02 * 0.740951125354959 / 2.384e-06, 3.401756e-03 * 0.740951125354959 / 2.384e-06, 9.83715e-04 * 0.740951125354959 / 2.384e-06, 9.9182e-05 * 0.740951125354959 / 2.384e-06, /* 15 */
-@@ -435,6 +438,241 @@ window_subband(const sample_t * x1, FLOAT a[SBLIMIT])
+@@ -435,6 +438,241 @@ window_subband(const sample_t * x1, FLOA
  
      const sample_t *x2 = &x1[238 - 14 - 286];
  
@@ -545,7 +540,7 @@ index 596cac9..787c911 100644
      for (i = -15; i < 0; i++) {
          FLOAT   w, s, t;
  
-@@ -501,6 +739,7 @@ window_subband(const sample_t * x1, FLOAT a[SBLIMIT])
+@@ -501,6 +739,7 @@ window_subband(const sample_t * x1, FLOA
          x1--;
          x2++;
      }
@@ -553,11 +548,10 @@ index 596cac9..787c911 100644
      {
          FLOAT   s, t, u, v;
          t = x1[-16] * wp[-10];
-diff --git a/libmp3lame/psymodel.c b/libmp3lame/psymodel.c
-index 60076ee..771b92e 100644
---- a/libmp3lame/psymodel.c
-+++ b/libmp3lame/psymodel.c
-@@ -155,6 +155,9 @@ blocktype_d[2]        block type to use for previous granule
+diff -up lame-3.101/libmp3lame/psymodel.c.3~ lame-3.101/libmp3lame/psymodel.c
+--- lame-3.101/libmp3lame/psymodel.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/psymodel.c	2026-07-10 16:52:14.796620867 +0200
+@@ -155,6 +155,9 @@ blocktype_d[2]        block type to use
  #include "fft.h"
  #include "lame-analysis.h"
  
@@ -567,7 +561,7 @@ index 60076ee..771b92e 100644
  
  #define NSFIRLEN 21
  
-@@ -218,10 +221,58 @@ psycho_loudness_approx(FLOAT const *energy, FLOAT const *eql_w)
+@@ -218,10 +221,58 @@ psycho_loudness_approx(FLOAT const *ener
      int     i;
      FLOAT   loudness_power;
  
@@ -636,7 +630,7 @@ index 60076ee..771b92e 100644
      SessionConfig_t const *const cfg = &gfc->cfg;
      PsyStateVar_t *psv = &gfc->sv_psy;
      plotting_data *plt = cfg->analysis ? gfc->pinfo : 0;
-@@ -676,6 +730,47 @@ vbrpsy_compute_fft_l(lame_internal_flags * gfc, const sample_t * const buffer[2]
+@@ -676,6 +730,47 @@ vbrpsy_compute_fft_l(lame_internal_flags
      }
      else if (chn == 2) {
          FLOAT const sqrt2_half = SQRT2 * 0.5f;
@@ -684,7 +678,7 @@ index 60076ee..771b92e 100644
          /* FFT data for mid and side channel is derived from L & R */
          for (j = BLKSIZE - 1; j >= 0; --j) {
              FLOAT const l = wsamp_l[0][j];
-@@ -683,6 +778,7 @@ vbrpsy_compute_fft_l(lame_internal_flags * gfc, const sample_t * const buffer[2]
+@@ -683,6 +778,7 @@ vbrpsy_compute_fft_l(lame_internal_flags
              wsamp_l[0][j] = (l + r) * sqrt2_half;
              wsamp_l[1][j] = (l - r) * sqrt2_half;
          }
@@ -692,7 +686,7 @@ index 60076ee..771b92e 100644
      }
  
      /*********************************************************************
-@@ -691,6 +787,73 @@ vbrpsy_compute_fft_l(lame_internal_flags * gfc, const sample_t * const buffer[2]
+@@ -691,6 +787,73 @@ vbrpsy_compute_fft_l(lame_internal_flags
      fftenergy[0] = wsamp_l[0][0];
      fftenergy[0] *= fftenergy[0];
  
@@ -766,7 +760,7 @@ index 60076ee..771b92e 100644
      for (j = BLKSIZE / 2 - 1; j >= 0; --j) {
          FLOAT const re = (*wsamp_l)[BLKSIZE / 2 - j];
          FLOAT const im = (*wsamp_l)[BLKSIZE / 2 + j];
-@@ -704,6 +867,7 @@ vbrpsy_compute_fft_l(lame_internal_flags * gfc, const sample_t * const buffer[2]
+@@ -704,6 +867,7 @@ vbrpsy_compute_fft_l(lame_internal_flags
  
          psv->tot_ener[chn] = totalenergy;
      }
@@ -774,7 +768,7 @@ index 60076ee..771b92e 100644
  
      if (plt) {
          for (j = 0; j < HBLKSIZE; j++) {
-@@ -772,7 +936,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
+@@ -772,7 +936,7 @@ vbrpsy_attack_detection(lame_internal_fl
                          FLOAT energy[4], FLOAT sub_short_factor[4][3], int ns_attacks[4][4],
                          int uselongblock[2])
  {
@@ -783,7 +777,7 @@ index 60076ee..771b92e 100644
      SessionConfig_t const *const cfg = &gfc->cfg;
      PsyStateVar_t *const psv = &gfc->sv_psy;
      plotting_data *plt = cfg->analysis ? gfc->pinfo : 0;
-@@ -785,14 +949,170 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
+@@ -785,14 +949,170 @@ vbrpsy_attack_detection(lame_internal_fl
      /* Don't copy the input buffer into a temporary buffer */
      /* unroll the loop 2 times */
      for (chn = 0; chn < n_chn_out; chn++) {
@@ -957,7 +951,7 @@ index 60076ee..771b92e 100644
          for (i = 0; i < 576; i++) {
              FLOAT   sum1, sum2;
              sum1 = firbuf[i + 10];
-@@ -803,6 +1123,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
+@@ -803,6 +1123,7 @@ vbrpsy_attack_detection(lame_internal_fl
              }
              ns_hpfsmpl[chn][i] = sum1 + sum2;
          }
@@ -965,7 +959,7 @@ index 60076ee..771b92e 100644
          masking_ratio[gr_out][chn].en = psv->en[chn];
          masking_ratio[gr_out][chn].thm = psv->thm[chn];
          if (n_chn_psy > 2) {
-@@ -1423,10 +1744,10 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
+@@ -1423,10 +1744,10 @@ L3psycho_anal_vbr(lame_internal_flags *
      /* fft and energy calculation   */
      FLOAT(*wsamp_l)[BLKSIZE];
      FLOAT(*wsamp_s)[3][BLKSIZE_s];
@@ -980,11 +974,10 @@ index 60076ee..771b92e 100644
      FLOAT   eb[4][CBANDS], thr[4][CBANDS];
  
      FLOAT   sub_short_factor[4][3];
-diff --git a/libmp3lame/quantize.c b/libmp3lame/quantize.c
-index 9ba9c16..469b013 100644
---- a/libmp3lame/quantize.c
-+++ b/libmp3lame/quantize.c
-@@ -99,7 +99,7 @@ init_xrpow_core_init(lame_internal_flags * const gfc)
+diff -up lame-3.101/libmp3lame/quantize.c.3~ lame-3.101/libmp3lame/quantize.c
+--- lame-3.101/libmp3lame/quantize.c.3~	2020-05-06 09:45:56.000000000 +0200
++++ lame-3.101/libmp3lame/quantize.c	2026-07-10 16:58:00.655141314 +0200
+@@ -99,7 +99,7 @@ init_xrpow_core_init(lame_internal_flags
          gfc->init_xrpow_core = init_xrpow_core_sse;
  #endif
  #ifndef HAVE_NASM
@@ -993,16 +986,16 @@ index 9ba9c16..469b013 100644
      gfc->init_xrpow_core = init_xrpow_core_sse;
  #endif
  #endif
-@@ -1495,7 +1495,7 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
+@@ -1495,7 +1495,7 @@ VBR_old_iteration_loop(lame_internal_fla
      EncResult_t *const eov = &gfc->ov_enc;
      FLOAT   l3_xmin[2][2][SFBMAX];
  
 -    FLOAT   xrpow[576];
-+    FLOAT   xrpow[576] __attribute__ ((aligned (16)));
++    FLOAT   xrpow[576] __attribute__((aligned(16)));
      int     bands[2][2];
-     int     frameBits[15];
+     int     frameBits[16];
      int     used_bits;
-@@ -1904,7 +1904,7 @@ ABR_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
+@@ -1923,7 +1923,7 @@ ABR_iteration_loop(lame_internal_flags *
      SessionConfig_t const *const cfg = &gfc->cfg;
      EncResult_t *const eov = &gfc->ov_enc;
      FLOAT   l3_xmin[SFBMAX];
@@ -1011,7 +1004,7 @@ index 9ba9c16..469b013 100644
      int     targ_bits[2][2];
      int     mean_bits, max_frame_bits;
      int     ch, gr, ath_over;
-@@ -1991,7 +1991,7 @@ CBR_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
+@@ -2012,7 +2012,7 @@ CBR_iteration_loop(lame_internal_flags *
  {
      SessionConfig_t const *const cfg = &gfc->cfg;
      FLOAT   l3_xmin[SFBMAX];
@@ -1020,10 +1013,9 @@ index 9ba9c16..469b013 100644
      int     targ_bits[2];
      int     mean_bits, max_bits;
      int     gr, ch;
-diff --git a/libmp3lame/quantize_pvt.c b/libmp3lame/quantize_pvt.c
-index d8d6447..3eae9f1 100644
---- a/libmp3lame/quantize_pvt.c
-+++ b/libmp3lame/quantize_pvt.c
+diff -up lame-3.101/libmp3lame/quantize_pvt.c.3~ lame-3.101/libmp3lame/quantize_pvt.c
+--- lame-3.101/libmp3lame/quantize_pvt.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/quantize_pvt.c	2026-07-10 16:52:14.797361856 +0200
 @@ -27,6 +27,7 @@
  # include <config.h>
  #endif
@@ -1042,7 +1034,7 @@ index d8d6447..3eae9f1 100644
  
  #define NSATHSCALE 100  /* Assuming dynamic range=96dB, this value should be 92 */
  
-@@ -767,6 +771,70 @@ calc_noise_core_c(const gr_info * const cod_info, int *startline, int l, FLOAT s
+@@ -767,6 +771,70 @@ calc_noise_core_c(const gr_info * const
          }
      }
      else if (j > cod_info->big_values) {
@@ -1113,7 +1105,7 @@ index d8d6447..3eae9f1 100644
          FLOAT   ix01[2];
          ix01[0] = 0;
          ix01[1] = step;
-@@ -779,8 +847,95 @@ calc_noise_core_c(const gr_info * const cod_info, int *startline, int l, FLOAT s
+@@ -779,8 +847,95 @@ calc_noise_core_c(const gr_info * const
              j++;
              noise += temp * temp;
          }
@@ -1209,7 +1201,7 @@ index d8d6447..3eae9f1 100644
          while (l--) {
              FLOAT   temp;
              temp = fabs(cod_info->xr[j]) - pow43[ix[j]] * step;
-@@ -790,6 +945,7 @@ calc_noise_core_c(const gr_info * const cod_info, int *startline, int l, FLOAT s
+@@ -790,6 +945,7 @@ calc_noise_core_c(const gr_info * const
              j++;
              noise += temp * temp;
          }
@@ -1217,10 +1209,9 @@ index d8d6447..3eae9f1 100644
      }
  
      *startline = j;
-diff --git a/libmp3lame/takehiro.c b/libmp3lame/takehiro.c
-index 67aba1b..09539fe 100644
---- a/libmp3lame/takehiro.c
-+++ b/libmp3lame/takehiro.c
+diff -up lame-3.101/libmp3lame/takehiro.c.3~ lame-3.101/libmp3lame/takehiro.c
+--- lame-3.101/libmp3lame/takehiro.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/takehiro.c	2026-07-10 16:52:14.797558858 +0200
 @@ -26,6 +26,7 @@
  # include <config.h>
  #endif
@@ -1239,7 +1230,7 @@ index 67aba1b..09539fe 100644
  
  static const struct {
      const int region0_count;
-@@ -229,6 +233,57 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xr, int *ix)
+@@ -229,6 +233,57 @@ quantize_lines_xrpow(unsigned int l, FLO
      l = l >> 1;
      remaining = l % 2;
      l = l >> 1;
@@ -1297,7 +1288,7 @@ index 67aba1b..09539fe 100644
      while (l--) {
          FLOAT   x0, x1, x2, x3;
          int     rx0, rx1, rx2, rx3;
-@@ -250,6 +305,7 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xr, int *ix)
+@@ -250,6 +305,7 @@ quantize_lines_xrpow(unsigned int l, FLO
          XRPOW_FTOI(x2, *ix++);
          XRPOW_FTOI(x3, *ix++);
      };
@@ -1305,7 +1296,7 @@ index 67aba1b..09539fe 100644
      if (remaining) {
          FLOAT   x0, x1;
          int     rx0, rx1;
-@@ -423,6 +479,80 @@ quantize_xrpow(const FLOAT * xp, int *pi, FLOAT istep, gr_info const *const cod_
+@@ -423,6 +479,80 @@ quantize_xrpow(const FLOAT * xp, int *pi
  static int
  ix_max(const int *ix, const int *end)
  {
@@ -1470,7 +1461,7 @@ index 67aba1b..09539fe 100644
      do {
          unsigned int x = *ix++;
          unsigned int y = *ix++;
-@@ -469,6 +662,7 @@ count_bit_ESC(const int *ix, const int *const end, int t1, const int t2, unsigne
+@@ -469,6 +662,7 @@ count_bit_ESC(const int *ix, const int *
          x += y;
          sum += largetbl[x];
      } while (ix < end);
@@ -1478,7 +1469,7 @@ index 67aba1b..09539fe 100644
  
      sum2 = sum & 0xffffu;
      sum >>= 16u;
-@@ -790,10 +984,178 @@ count_bits(lame_internal_flags const *const gfc,
+@@ -790,10 +984,178 @@ count_bits(lame_internal_flags const *co
                  j += width;
              }
              else {
@@ -1657,10 +1648,9 @@ index 67aba1b..09539fe 100644
              }
          }
      }
-diff --git a/libmp3lame/util.c b/libmp3lame/util.c
-index 43b457c..a0002f0 100644
---- a/libmp3lame/util.c
-+++ b/libmp3lame/util.c
+diff -up lame-3.101/libmp3lame/util.c.3~ lame-3.101/libmp3lame/util.c
+--- lame-3.101/libmp3lame/util.c.3~	2021-06-19 14:02:44.000000000 +0200
++++ lame-3.101/libmp3lame/util.c	2026-07-10 16:52:14.797822651 +0200
 @@ -140,7 +140,7 @@ freegfc(lame_internal_flags * const gfc)
          gfc->VBR_seek_table.size = 0;
      }
@@ -1679,10 +1669,9 @@ index 43b457c..a0002f0 100644
  }
  
  void
-diff --git a/libmp3lame/util.h b/libmp3lame/util.h
-index 13f0cd4..b095bdf 100644
---- a/libmp3lame/util.h
-+++ b/libmp3lame/util.h
+diff -up lame-3.101/libmp3lame/util.h.3~ lame-3.101/libmp3lame/util.h
+--- lame-3.101/libmp3lame/util.h.3~	2020-07-11 10:52:43.000000000 +0200
++++ lame-3.101/libmp3lame/util.h	2026-07-10 16:52:14.797952342 +0200
 @@ -116,6 +116,36 @@ extern  "C" {
      typedef struct plotting_data plotting_data;
  #endif
@@ -1738,10 +1727,9 @@ index 13f0cd4..b095bdf 100644
  
          scalefac_struct scalefac_band;
  
-diff --git a/libmp3lame/vbrquantize.c b/libmp3lame/vbrquantize.c
-index 0f703b7..d6e1291 100644
---- a/libmp3lame/vbrquantize.c
-+++ b/libmp3lame/vbrquantize.c
+diff -up lame-3.101/libmp3lame/vbrquantize.c.3~ lame-3.101/libmp3lame/vbrquantize.c
+--- lame-3.101/libmp3lame/vbrquantize.c.3~	2017-10-14 15:06:52.000000000 +0200
++++ lame-3.101/libmp3lame/vbrquantize.c	2026-07-10 16:52:14.798101704 +0200
 @@ -26,6 +26,7 @@
  #  include <config.h>
  #endif
@@ -1761,7 +1749,7 @@ index 0f703b7..d6e1291 100644
  
  
  struct algo_s;
-@@ -226,6 +229,81 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
+@@ -226,6 +229,81 @@ calc_sfb_noise_x34(const FLOAT * xr, con
      unsigned int i = bw >> 2u;
      unsigned int const remaining = (bw & 0x03u);
  
@@ -1843,7 +1831,7 @@ index 0f703b7..d6e1291 100644
      while (i-- > 0) {
          x[0] = sfpow34 * xr34[0];
          x[1] = sfpow34 * xr34[1];
-@@ -243,6 +321,7 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
+@@ -243,6 +321,7 @@ calc_sfb_noise_x34(const FLOAT * xr, con
          xr += 4;
          xr34 += 4;
      }

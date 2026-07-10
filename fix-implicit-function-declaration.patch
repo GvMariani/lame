@@ -1,0 +1,23 @@
+Description: Fix "implicit declaration of function  [...]" compiler errors
+ by declaring extern functions as found in `libmp3lame/id3tag.c`.
+Author: Fabian Greffrath <fabian@debian.org>
+Forwarded: https://sourceforge.net/p/lame/bugs/517/
+# UCS-2 ID3 helpers are still used from frontend/parse.c for TENC_UTF8,
+# but their prototypes are gated out of lame.h when
+# DEPRECATED_OR_OBSOLETE_CODE_REMOVED is 1 (the default).
+
+--- a/frontend/parse.c
++++ b/frontend/parse.c
+@@ -402,6 +402,12 @@ static int getIntValue(char const* token
+ }
+ 
+ #ifdef ID3TAGS_EXTENDED
++
++extern int
++id3tag_set_comment_ucs2(lame_t gfp, char const *lang, unsigned short const *desc, unsigned short const *text);
++extern int
++id3tag_set_fieldvalue_ucs2(lame_t gfp, const unsigned short *fieldvalue);
++
+ static int
+ set_id3v2tag(lame_global_flags* gfp, TextEncoding enc, int type, unsigned short const* str)
+ {
