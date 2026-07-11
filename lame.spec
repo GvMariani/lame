@@ -18,7 +18,7 @@
 
 Summary:		LAME Ain't an MP3 Encoder
 Name:		lame
-Version:		3.101
+Version:		4.0
 Release:		1
 License:		LGPLv2
 Group:		Sound
@@ -28,11 +28,9 @@ Source0:	https://downloads.sourceforge.net/project/lame/lame/%{version}/%{name}-
 # (tpg) patches from debian
 Patch3:		07-field-width-fix.patch
 Patch7:		msse.patch
-# LAME 3.101 UTF-8 ID3 helpers: unsigned short* vs char* type mismatch
+# LAME 4.0: frontend still treated UTF-8 ID3 tags as UCS-2 (library API is char*)
 Patch8:		fix-incompatible-pointer-types.patch
-# UCS-2 helpers used by frontend but hidden by DEPRECATED_OR_OBSOLETE_CODE_REMOVED
-Patch9:		fix-implicit-function-declaration.patch
-# Export new 3.101 symbols missing from libmp3lame.sym (dynamic frontend link)
+# Export hip_finish_pinfo missing from libmp3lame.sym (dynamic frontend link)
 Patch10:	export-new-symbols.patch
 # Let's give it a performance boost...
 Patch12:	http://tmkk.undo.jp/lame/lame-3.100-sse-20171014.diff

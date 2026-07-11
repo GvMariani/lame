@@ -1,52 +1,69 @@
-Description: Fix "passing argument [...] from incompatible pointer type"
- compiler errors by properly casting pointer arguments to the expected type.
-Author: Fabian Greffrath <fabian@debian.org>
-# From Debian: https://salsa.debian.org/multimedia-team/lame
-# LAME 3.101's new ID3v2.4 UTF-8 helpers were copy-pasted from the UTF-16
-# path and keep unsigned short * in the public API while calling char *
-# internals. Casts silence -Wincompatible-pointer-types (error on modern GCC).
+Description: Fix frontend UTF-8 ID3 helpers for LAME 4.0 API
+ In 4.0, id3tag_set_textinfo_utf8 / id3tag_set_comment_utf8 take char const*
+ (not unsigned short*). The frontend still treated TENC_UTF8 like UCS-2,
+ which breaks the build with -Wincompatible-pointer-types.
 
---- a/libmp3lame/id3tag.c
-+++ b/libmp3lame/id3tag.c
-@@ -658,7 +658,7 @@ id3tag_set_genre_utf8(lame_t gfp, unsign
-             return 0;
-         }
-     }
--    ret = id3v2_add_utf8_lng(gfp, ID_GENRE, 0, text);
-+    ret = id3v2_add_utf8_lng(gfp, ID_GENRE, 0, (const char *) text);
-     if (ret == 0) {
-         gfc->tag_spec.flags |= CHANGED_FLAG;
-         gfc->tag_spec.genre_id3v1 = GENRE_INDEX_OTHER;
-@@ -1138,19 +1138,19 @@ id3tag_set_textinfo_utf8(lame_t gfp, cha
-         return 0;
-     }
-     if (frame_id == ID_TXXX || frame_id == ID_WXXX || frame_id == ID_COMMENT) {
--        return id3tag_set_userinfo_utf8(gfp, frame_id, text);
-+        return id3tag_set_userinfo_utf8(gfp, frame_id, (const char *) text);
-     }
-     if (frame_id == ID_GENRE) {
-         return id3tag_set_genre_utf8(gfp, text);
-     }
-     if (frame_id == ID_PCST) {
--        return id3v2_add_utf8_lng(gfp, frame_id, 0, text);
-+        return id3v2_add_utf8_lng(gfp, frame_id, 0, (const char *) text);
-     }
-     if (frame_id == ID_USER) {
--        return id3v2_add_utf8_lng(gfp, frame_id, text, 0);
-+        return id3v2_add_utf8_lng(gfp, frame_id, (const char *) text, 0);
-     }
-     if (frame_id == ID_WFED) {
--        return id3v2_add_utf8_lng(gfp, frame_id, text, 0); /* iTunes expects WFED to be a text frame */
-+        return id3v2_add_utf8_lng(gfp, frame_id, (const char *) text, 0); /* iTunes expects WFED to be a text frame */
-     }
-     if (isFrameIdMatching(frame_id, FRAME_ID('T', 0, 0, 0))
-       ||isFrameIdMatching(frame_id, FRAME_ID('W', 0, 0, 0))) {
-@@ -1159,7 +1159,7 @@ id3tag_set_textinfo_utf8(lame_t gfp, cha
-             return -2;  /* must be Latin-1 encoded */
-         }
- #endif
--        return id3v2_add_utf8_lng(gfp, frame_id, 0, text);
-+        return id3v2_add_utf8_lng(gfp, frame_id, 0, (const char *) text);
-     }
-     return -255;        /* not supported by now */
+--- a/frontend/parse.c
++++ b/frontend/parse.c
+@@ -402,35 +402,42 @@
  }
+ 
+ #ifdef ID3TAGS_EXTENDED
++/* LAME 4.0: UTF-8 ID3 helpers take char const*; UTF-16 still uses unsigned short. */
+ static int
+-set_id3v2tag(lame_global_flags* gfp, TextEncoding enc, int type, unsigned short const* str)
++set_id3v2tag(lame_global_flags* gfp, TextEncoding enc, int type, void const* str)
+ {
+     switch (enc)
+     {
+         case TENC_UTF8:
+-            switch (type)
+             {
+-                case 'a': return id3tag_set_textinfo_utf8(gfp, "TPE1", str);
+-                case 't': return id3tag_set_textinfo_utf8(gfp, "TIT2", str);
+-                case 'l': return id3tag_set_textinfo_utf8(gfp, "TALB", str);
+-                case 'g': return id3tag_set_textinfo_utf8(gfp, "TCON", str);
+-                case 'c': return id3tag_set_comment_ucs2(gfp, 0, 0, str);
+-                case 'n': return id3tag_set_textinfo_utf8(gfp, "TRCK", str);
+-                case 'y': return id3tag_set_textinfo_utf8(gfp, "TYER", str);
+-                case 'v': return id3tag_set_fieldvalue_ucs2(gfp, str);
++                char const* u8 = (char const*) str;
++                switch (type)
++                {
++                    case 'a': return id3tag_set_textinfo_utf8(gfp, "TPE1", u8);
++                    case 't': return id3tag_set_textinfo_utf8(gfp, "TIT2", u8);
++                    case 'l': return id3tag_set_textinfo_utf8(gfp, "TALB", u8);
++                    case 'g': return id3tag_set_textinfo_utf8(gfp, "TCON", u8);
++                    case 'c': return id3tag_set_comment_utf8(gfp, 0, 0, u8);
++                    case 'n': return id3tag_set_textinfo_utf8(gfp, "TRCK", u8);
++                    case 'y': return id3tag_set_textinfo_utf8(gfp, "TYER", u8);
++                    case 'v': return id3tag_set_fieldvalue(gfp, u8);
++                }
+             }
+             ;;
+         case TENC_UTF16:
+-            switch (type)
+             {
+-                case 'a': return id3tag_set_textinfo_utf16(gfp, "TPE1", str);
+-                case 't': return id3tag_set_textinfo_utf16(gfp, "TIT2", str);
+-                case 'l': return id3tag_set_textinfo_utf16(gfp, "TALB", str);
+-                case 'g': return id3tag_set_textinfo_utf16(gfp, "TCON", str);
+-                case 'c': return id3tag_set_comment_utf16(gfp, 0, 0, str);
+-                case 'n': return id3tag_set_textinfo_utf16(gfp, "TRCK", str);
+-                case 'y': return id3tag_set_textinfo_utf16(gfp, "TYER", str);
+-                case 'v': return id3tag_set_fieldvalue_utf16(gfp, str);
++                unsigned short const* u16 = (unsigned short const*) str;
++                switch (type)
++                {
++                    case 'a': return id3tag_set_textinfo_utf16(gfp, "TPE1", u16);
++                    case 't': return id3tag_set_textinfo_utf16(gfp, "TIT2", u16);
++                    case 'l': return id3tag_set_textinfo_utf16(gfp, "TALB", u16);
++                    case 'g': return id3tag_set_textinfo_utf16(gfp, "TCON", u16);
++                    case 'c': return id3tag_set_comment_utf16(gfp, 0, 0, u16);
++                    case 'n': return id3tag_set_textinfo_utf16(gfp, "TRCK", u16);
++                    case 'y': return id3tag_set_textinfo_utf16(gfp, "TYER", u16);
++                    case 'v': return id3tag_set_fieldvalue_utf16(gfp, u16);
++                }
+             }
+             ;;
+         default:
